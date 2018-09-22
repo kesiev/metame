@@ -1,0 +1,187 @@
+<html>
+	<head>
+		<title>METAME</title>
+		<style>
+			BODY {
+				background-color:#000;
+				width: 100%;
+				height: 100%;
+				padding: 0;
+				margin: 0;
+				overflow: hidden;
+				font-family: Helvetica, sans serif;
+				font-size:14px;
+			}
+			.center {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-right: -50%;
+				transform: translate(-50%,-50%);
+			}
+			#banner {
+				transition: opacity 1s;
+				opacity: 0;
+				width:60%;
+				background-color: #ff0000;
+				color:#000000;
+				padding:10px;
+				text-align: justify;
+			}
+			#banner .title {
+				text-align:center;
+				letter-spacing: 4vw;
+				font-size: 40px;
+				font-weight: bold;
+				margin:60px -4vw 60px 0;
+			}
+			#banner P {
+				padding:0;
+				margin:14px 0;
+				line-height: 16px;
+			}
+			#banner A {
+				color:#000000;
+			}
+			#banner .content {
+				width:80%;
+				margin: auto;
+			}
+			#banner .ruler {
+				border-top:2px solid #000000;
+				margin:14px 0;
+				height:0;
+			}
+			#banner .bar {
+				text-align: right;
+			}
+			#banner input[type=button] {
+				background-color: #ff0000;
+				padding:10px;
+				border:2px solid #000000;
+				font-weight: bold;
+				margin-left: 10px;
+				cursor: pointer;
+			}
+			#nextbutton {
+				transition: bottom 0.5s,opacity 0.3s;
+				width:50px;
+				height:50px;
+				text-align: center;
+				line-height: 50px;
+				background-color: #f00000;
+				border-radius: 100px;
+				position: absolute;
+				right:10px;
+				bottom:-100px;
+				z-index: 10000;
+				border:2px solid #000;
+				font-weight: bold;
+				cursor: pointer;
+				z-index: 1000;
+			}
+			#nextbutton.spawn {
+				bottom:10px;
+			}
+			#nextbutton.ready {
+				opacity: 0.3;
+			}
+			#nextbutton:hover {
+				opacity: 1;
+			}
+			.notes {
+				text-align: center;
+				font-size:12px;
+				font-style: italic;
+			}
+		</style>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<script src="core/core.js"></script>
+		<script src="designers/system.js"></script>
+		<script src="designers/culture.js"></script>
+		<script src="designers/text.js"></script>
+		<script src="designers/gameworld.js"></script>
+		<script src="designers/graphics.js"></script>
+		<script src="designers/gamerules.js"></script>
+		<script src="designers/hud.js"></script>
+		<script src="designers/title.js"></script>
+		<script src="designers/level.js"></script>
+		<script src="designers/gameflow.js"></script>
+		<script src="designers/artworks.js"></script>
+		<script src="designers/audio.js"></script>
+		<script src="designers/screeneffects.js"></script>
+		<script src="designers/gametime.js"></script>
+		<script src="engines/basic.js"></script>
+	</head>
+	<body onload="onl()">
+		<div id="banner" class="center">
+			<div class="content">
+				<p class="title">METAME</p>
+				<div class="ruler"></div>
+				<p>NASA is reporting that countless of unlicensed (I hope) alien early videogame ROMs are being streamed in space as we speak.</p>
+				<p>METAME is a <b>M</b>ultiple <b>E</b>xtra<b>T</b>errestrial <b>A</b>rcade <b>M</b>achine <b>E</b>mulator and it's probably the first <a href='http://github.com/kesiev/metame'>opensource</a> earthling attempt on emulating extraterrestrial videogame systems.</p>
+				<p>Since the amount of available games is hard to manage, METAME will download a random game and play it. To save a game just add it to your browser bookmarks - however game indexes may change during development.</p>
+				<p>This emulator is far from being complete and alien gaming experiences are mostly obscure and scary. It may result in a both inspiring and disturbing experience to you. Play it at your own risk.</p>
+				<div class="ruler"></div>
+				<p class="bar"><input type="checkbox" id="disableAudio"> Disable audio <input type="button" onclick="play()" value="Play" id="play"></p>
+				<p class="notes">METAME uses arrow keys as general motion input and Z button as alternate action. Tested on Firefox and Chrome desktop. - <a href="https://twitter.com/kesiev">Contact me</a></p>
+			</div>
+		</div>
+		<div id="nextbutton" onclick="buttonClick()">NEXT</div>
+	</body>
+</html>
+<script>
+
+var runningGame,pageState=0,romIdRange=1000000;
+function play() {
+	pageState=1;
+	document.getElementById("banner").style.opacity=0;
+	setTimeout(function(){
+		document.getElementById("nextbutton").className="spawn";
+		setTimeout(function(){
+			pageState=2;
+			document.getElementById("nextbutton").className="spawn ready";
+			nextGame();
+		},1000);
+	},1500);
+}
+
+function nextGame() {
+	if (pageState==2) {
+		document.title="METAME";
+		if (runningGame) {
+			runningGame.stop();
+			runningGame=0;
+		}
+		var romId=window.location.hash.substr(1)*1;
+		if (!isNaN(romId)&&(romId>0)&&(romId<romIdRange)) {
+			pageState=3;
+			METAME.run({
+				romId:romId,
+				parent:document.body,
+				disableAudio:document.getElementById("disableAudio").checked,
+				disableBlinking:false,
+				fullScreen:true
+				//scale:2
+			},function(G,game){
+				pageState=2;
+				runningGame=game;
+				document.title="METAME - romId #"+G.romId;
+			});		
+		} else buttonClick();
+	}
+}
+
+function buttonClick() {
+	if (pageState==2) window.location.hash="#"+Math.floor(Math.random()*romIdRange);
+}
+
+function onl(){
+	METAME.addEventListener(window,"hashchange",function(){nextGame()});
+	setTimeout(function(){
+		document.getElementById("banner").style.opacity=1;
+	},1000);
+}
+
+</script>
