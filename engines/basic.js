@@ -516,7 +516,7 @@ METAME.setEngine({
 						sprite.speedX=MT.limit(sprite.speedX+sprite.gravityX,-sprite.speedLimit,sprite.speedLimit);
 						sprite.speedY=MT.limit(sprite.speedY+sprite.gravityY,-sprite.speedLimit,sprite.speedLimit);
 						if (handleSpeed(sprite,"width","x","speedX",allCollisions)) sprite.speedX*=-sprite.restitution;
-						if (handleSpeed(sprite,"height","y","speedY",allCollisions)) sprite.speedX*=-sprite.restitution;
+						if (handleSpeed(sprite,"height","y","speedY",allCollisions)) sprite.speedY*=-sprite.restitution;
 						handleEdge(sprite,"height","edgeUpDown","y",0,areaheight,"speedY");
 						handleEdge(sprite,"width","edgeLeftRight","x",0,areawidth,"speedX");
 
