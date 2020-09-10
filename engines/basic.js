@@ -999,7 +999,7 @@ METAME.setEngine({
 			alive=[];
 			G.timer=(G.timer+1)%60;
 
-			G.screen.cnv.width=G.screenWidth;			
+			MT.clearCanvas(G.screen);
 
 			if (loadingTimer) loadingTimer--;
 			else {

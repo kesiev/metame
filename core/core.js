@@ -272,6 +272,10 @@
 		},
 
 		// --- GRAPHIC UTILS
+		clearCanvas:function(canvas) {
+			canvas.cnv.width=canvas.width;
+			canvas.ctx.webkitImageSmoothingEnabled = canvas.ctx.imageSmoothingEnabled = canvas.ctx.mozImageSmoothingEnabled = canvas.ctx.oImageSmoothingEnabled = canvas.ctx.msImageSmoothingEnabled= false;		
+		},
 		newCanvas:function(width,height) {
 			var canvas=document.createElement("canvas");
 			//canvas.style.border="1px solid #f00";
@@ -284,11 +288,9 @@
 			}
 			canvas.width=width;
 			canvas.height=height;
-			var ctx=canvas.getContext("2d");
-			ctx.webkitImageSmoothingEnabled = ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.oImageSmoothingEnabled = ctx.msImageSmoothingEnabled= false;		
 			return {
 				cnv:canvas,
-				ctx:ctx,
+				ctx:canvas.getContext("2d"),
 				width:width,
 				height:height,
 				getData:function(){
